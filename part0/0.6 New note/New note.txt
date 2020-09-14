@@ -1,0 +1,25 @@
+title 0.6 New note
+
+note over browser:
+user enters a value in text box
+and clicks submit
+end note
+
+note over browser:
+code from spa.js appends the input value
+to <ul> as <li> and rerenders the whole list
+end note
+
+note over browser:
+it then sends the input value 
+to the server as JSON
+end note
+
+browser->server: HTTP POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa
+
+note over server:
+server receives the JSON-data and
+appends it to the existing 'notes' array
+end note
+
+server-->browser: 201 Created
