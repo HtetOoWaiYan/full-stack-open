@@ -2,11 +2,12 @@ import React from 'react'
 
 const Filter = props => (
     <div>
-        filter shown with &nbsp;
+        find countries &nbsp;
         <input
             onChange={props.handleFilterChange}
             value={props.newFilter}
         />
+        <button onClick={props.handleClear}>clear</button>
     </div>
 )
 
