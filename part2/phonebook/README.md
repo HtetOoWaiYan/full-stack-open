@@ -6,11 +6,12 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 In the project directory,
 
-Run: `npm i` to install the dependencies.
+Run: **`npm i`** to install the dependencies.
 
-Run the database server  with: `npm run server`
+Run the database server  with: **`npm run server`**
 
-Run the app in the development mode: `npm start`
+Run the app in the development mode: **`npm start`**
+
 
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
