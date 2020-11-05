@@ -80,6 +80,9 @@ const App = () => {
                         setSuccessMessage(null)
                     }, 2500)
                 })
+                .catch(error => {
+                    console.log(error.response.data)
+                })
         }
     }
 
