@@ -52,9 +52,9 @@ const App = () => {
                     }, 2500)
                 })
                 .catch(error => {
-                    setErrorMessage(
-                        `Person '${sameName.name}' was already removed from server`
-                    )
+                    console.log(error.response.data)
+                    
+                    setErrorMessage(error.response.data)
                     setTimeout(() => {
                         setErrorMessage(null)
                     }, 3000)
@@ -82,6 +82,11 @@ const App = () => {
                 })
                 .catch(error => {
                     console.log(error.response.data)
+
+                    setErrorMessage(error.response.data.error)
+                    setTimeout(() => {
+                        setErrorMessage(null)
+                    }, 3000)
                 })
         }
     }
