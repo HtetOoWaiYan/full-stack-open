@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const bcrypt = require('bcrypt')
 const supertest = require('supertest')
 const helper = require('./test_helper')
 const app = require('../app')
@@ -6,6 +7,7 @@ const app = require('../app')
 const api = supertest(app)
 
 const Blog = require('../models/blog')
+const User = require('../models/user')
 
 beforeEach(async () => {
 	await Blog.deleteMany({})
@@ -15,7 +17,6 @@ beforeEach(async () => {
 		await blogObject.save()
 	}
 })
-
 
 describe('when there is initially some blogs saved', () => {
 	test('blogs are returned as json', async () => {
@@ -39,16 +40,35 @@ describe('when there is initially some blogs saved', () => {
 })
 
 describe('addition of a new blog', () => {
-	test('succeeds with valid data', async () => {
+	let login = {}
+
+	beforeEach(async () => {
+		await User.deleteMany({})
+
+		const passwordHash = await bcrypt.hash('root', 10)
+		const user = new User({ username: 'root', passwordHash })
+
+		await user.save()
+
+		login = await api
+			.post('/api/login')
+			.send({ 'username': 'root', 'password': 'root' })
+			.expect(200)
+			.expect('Content-Type', /application\/json/)
+
+	})
+
+	test('succeeds with valid token and data', async () => {
 		const newBlog = {
-			title: 'New blog for testing blog-create',
+			title: 'Test: Creating Blog',
 			author: 'Mr. Tester',
 			url: 'https://test.com/1',
-			likes: 4
+			likes: 2
 		}
 
 		await api
 			.post('/api/blogs')
+			.set('Authorization', `bearer ${login.body.token}`)
 			.send(newBlog)
 			.expect(201)
 			.expect('Content-Type', /application\/json/)
@@ -58,19 +78,20 @@ describe('addition of a new blog', () => {
 
 		const titles = blogsAtEnd.map(b => b.title)
 		expect(titles).toContain(
-			'New blog for testing blog-create'
+			'Test: Creating Blog'
 		)
 	})
 
 	test('without \'likes\' property defaults \'likes\' value to 0', async () => {
 		const newBlog = {
-			title: 'Blog without likes property',
+			title: 'Test: Creating Blog Without likes Property',
 			author: 'Mr. Tester',
 			url: 'https://test.com/2'
 		}
 
 		await api
 			.post('/api/blogs')
+			.set('Authorization', `bearer ${login.body.token}`)
 			.send(newBlog)
 			.expect(201)
 			.expect('Content-Type', /application\/json/)
@@ -91,8 +112,26 @@ describe('addition of a new blog', () => {
 
 		await api
 			.post('/api/blogs')
+			.set('Authorization', `bearer ${login.body.token}`)
 			.send(newBlog)
 			.expect(400)
+
+		const blogsAtEnd = await helper.blogsInDb()
+		expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
+	})
+
+	test('fails with status code 401 if the token is not provided', async () => {
+		const newBlog = {
+			title: 'Test: Token not provided',
+			author: 'Mr. Tester',
+			url: 'https://test.com/4',
+			likes: 8
+		}
+
+		await api
+			.post('/api/blogs')
+			.send(newBlog)
+			.expect(401)
 
 		const blogsAtEnd = await helper.blogsInDb()
 		expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
