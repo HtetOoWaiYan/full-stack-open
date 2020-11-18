@@ -1,0 +1,1 @@
+A seperate repository for Part 3 can be found [here](https://github.com/HtetOoWaiYan/fullstackopen-part3).
