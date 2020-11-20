@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import Blog from './components/Blog'
-import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
+import LoginForm from './components/LoginForm'
+import Notification from './components/Notification'
 import loginService from './services/login'
 import blogService from './services/blogs'
 
@@ -11,9 +12,7 @@ const App = () => {
 	const [message, setMessage] = useState(null)
 	const [username, setUsername] = useState('')
 	const [password, setPassword] = useState('')
-	const [title, setTitle] = useState('')
-	const [author, setAuthor] = useState('')
-	const [url, setUrl] = useState('')
+	const [formVisible, setFormVisible] = useState(false)
 
 	useEffect(() => {
 		blogService.getAll().then(blogs =>
@@ -58,27 +57,40 @@ const App = () => {
 		setUser(null)
 	}
 
-	const addBlog = async event => {
-		event.preventDefault()
-		
-		const blogObject = {
-			title,
-			author,
-			url
-		}
-
+	const addBlog = async blogObject => {
 		const addedBlog = await blogService
 			.create(blogObject)
 
 		setBlogs(blogs.concat(addedBlog))	
-		setTitle('')
-		setAuthor('')
-		setUrl('')
-
+		
 		setMessage(`'${addedBlog.title}' by ${addedBlog.author} added.`)
 		setTimeout(() => {
 			setMessage(null)
+			setFormVisible(false)
 		}, 3000)
+	}
+
+	const updateBlog = async (id, blogObject) => {
+		const updatedBlog = await blogService
+			.update(id, blogObject)
+
+		const newBlogs = blogs.map(blog => {
+			if (blog.id === id) {
+				return { ...blog, likes: updatedBlog.likes }
+			}
+			return blog
+		})
+
+		setBlogs(newBlogs)
+	}
+
+	const removeBlog = async id => {
+		await blogService
+			.remove(id)
+
+		const newBlogs = blogs.filter(blog => blog.id !== id)
+
+		setBlogs(newBlogs)
 	}
 
 	if (user === null) {
@@ -99,19 +111,26 @@ const App = () => {
 			<h2>blogs</h2>
 			<p>{user.name} logged in.</p>
 			<button onClick={handleLogout}>log out</button>
-			<BlogForm 
-				message={message}
-				addBlog={addBlog}
-				title={title}
-				author={author}
-				url={url}
-				setTitle={setTitle}
-				setAuthor={setAuthor}
-				setUrl={setUrl}
-			/>
+			<Notification message={message} />
+			{
+				formVisible
+				? <div>
+					<BlogForm addBlog={addBlog} />
+					<button onClick={() => setFormVisible(false)}>cancel</button>
+				</div>				
+				: <button onClick={() => setFormVisible(true)}>new blog</button>
+			}
+			
 			<h3>blogs</h3>
-			{blogs.map(blog =>
-				<Blog key={blog.id} blog={blog} />
+			{blogs
+				.sort((a, b) => b.likes - a.likes)
+				.map(blog =>
+					<Blog 
+						key={blog.id} 
+						blog={blog} 
+						updateBlog={updateBlog}
+						removeBlog={removeBlog}
+					/>
 			)}
 		</div>
 	)

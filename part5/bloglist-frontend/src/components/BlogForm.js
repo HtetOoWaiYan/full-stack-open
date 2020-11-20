@@ -1,23 +1,28 @@
-import React from 'react'
-import Notification from './Notification'
+import React, { useState } from 'react'
 
-const BlogForm = props => {
-    const { 
-		message,
-        addBlog, 
-		title, 
-		author,
-		url,
-		setTitle, 
-		setAuthor,
-		setUrl
-    } = props
+const BlogForm = ({ addBlog }) => {
+	const [title, setTitle] = useState('')
+	const [author, setAuthor] = useState('')
+	const [url, setUrl] = useState('')
+
+	const createBlog = event => {
+		event.preventDefault()
+
+		addBlog({
+			title,
+			author,
+			url
+		})
+
+		setTitle('')
+		setAuthor('')
+		setUrl('')
+	}
 
     return (
 		<div>
-			<Notification message={message} />
 			<h3>create new</h3>
-			<form onSubmit={addBlog}>
+			<form onSubmit={createBlog}>
 				<div>
 					title
 						<input
