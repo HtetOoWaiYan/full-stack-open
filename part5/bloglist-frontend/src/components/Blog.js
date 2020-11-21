@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import PropTypes from 'prop-types'
 
 const Blog = ({ blog, updateBlog, removeBlog }) => {
 	const [ viewDetail, setViewDetail ] = useState(false)
@@ -10,7 +11,7 @@ const Blog = ({ blog, updateBlog, removeBlog }) => {
 			url: blog.url,
 			likes: ++blog.likes,
 		})
-	} 
+	}
 
 	const deleteBlog = () => {
 		removeBlog(blog.id)
@@ -18,12 +19,12 @@ const Blog = ({ blog, updateBlog, removeBlog }) => {
 
 	return (
 		<div>
-			{blog.title}			
+			{blog.title}
 			<button onClick={() => setViewDetail(!viewDetail)}>
 				{viewDetail ? 'hide' : 'view'}
 			</button>
 			{
-				viewDetail && 
+				viewDetail &&
 				<div style={{ padding: 10, margin: 10, border: '1px solid black' }}>
 					<a href={blog.url}>{blog.url}</a>
 					<p>likes: {blog.likes}</p>
@@ -37,6 +38,12 @@ const Blog = ({ blog, updateBlog, removeBlog }) => {
 			}
 		</div>
 	)
+}
+
+Blog.propTypes = {
+	blog: PropTypes.object.isRequired,
+	updateBlog: PropTypes.func.isRequired,
+	removeBlog: PropTypes.func.isRequired,
 }
 
 export default Blog

@@ -10,8 +10,6 @@ const App = () => {
 	const [blogs, setBlogs] = useState([])
 	const [user, setUser] = useState(null)
 	const [message, setMessage] = useState(null)
-	const [username, setUsername] = useState('')
-	const [password, setPassword] = useState('')
 	const [formVisible, setFormVisible] = useState(false)
 
 	useEffect(() => {
@@ -29,12 +27,10 @@ const App = () => {
 		}
 	}, [])
 
-	const handleLogin = async (event) => {
-		event.preventDefault()
-
+	const createLogin = async loginObject => {
 		try {
 			const user = await loginService
-				.login({ username, password })
+				.login(loginObject)
 
 			window.localStorage.setItem(
 				'loggedInUser', JSON.stringify(user)
@@ -42,8 +38,6 @@ const App = () => {
 
 			blogService.setToken(user.token)
 			setUser(user)
-			setUsername('')
-			setPassword('')
 		} catch (exception) {
 			setMessage('Wrong credentials')
 			setTimeout(() => {
@@ -61,8 +55,8 @@ const App = () => {
 		const addedBlog = await blogService
 			.create(blogObject)
 
-		setBlogs(blogs.concat(addedBlog))	
-		
+		setBlogs(blogs.concat(addedBlog))
+
 		setMessage(`'${addedBlog.title}' by ${addedBlog.author} added.`)
 		setTimeout(() => {
 			setMessage(null)
@@ -85,8 +79,7 @@ const App = () => {
 	}
 
 	const removeBlog = async id => {
-		await blogService
-			.remove(id)
+		await blogService.remove(id)
 
 		const newBlogs = blogs.filter(blog => blog.id !== id)
 
@@ -95,14 +88,10 @@ const App = () => {
 
 	if (user === null) {
 		return (
-			<LoginForm 
-				message={message}	
-				handleLogin={handleLogin}
-				username={username}
-				password={password}
-				setUsername={setUsername}
-				setPassword={setPassword}
-			/>
+			<div>
+				<Notification message={message} />
+				<LoginForm createLogin={createLogin} />
+			</div>
 		)
 	}
 
@@ -114,24 +103,24 @@ const App = () => {
 			<Notification message={message} />
 			{
 				formVisible
-				? <div>
-					<BlogForm addBlog={addBlog} />
-					<button onClick={() => setFormVisible(false)}>cancel</button>
-				</div>				
-				: <button onClick={() => setFormVisible(true)}>new blog</button>
+					? <div>
+						<BlogForm addBlog={addBlog} />
+						<button onClick={() => setFormVisible(false)}>cancel</button>
+					</div>
+					: <button onClick={() => setFormVisible(true)}>new blog</button>
 			}
-			
+
 			<h3>blogs</h3>
 			{blogs
 				.sort((a, b) => b.likes - a.likes)
 				.map(blog =>
-					<Blog 
-						key={blog.id} 
-						blog={blog} 
+					<Blog
+						key={blog.id}
+						blog={blog}
 						updateBlog={updateBlog}
 						removeBlog={removeBlog}
 					/>
-			)}
+				)}
 		</div>
 	)
 }
