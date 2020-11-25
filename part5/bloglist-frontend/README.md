@@ -6,4 +6,4 @@ Run [this back-end API](https://github.com/HtetOoWaiYan/full-stack-open/tree/mas
 
 Run the app in development mode: **`npm start`**
 
-Run Cypress: **`npm run cypress:open`**
+Run [Cypress](https://www.cypress.io): **`npm run cypress:open`**
