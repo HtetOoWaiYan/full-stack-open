@@ -14,9 +14,10 @@ TEST_MONGODB_URI='your_mongodb_connection_string_for_testing'
 
 ### Availabe commands
 
-Run the app in the development mode: **`npm run dev`**
+Run the app in development mode: **`npm run dev`**
 
 Run tests: **`npm run test`**
 
 Run the linter: **`npm run lint`**
 
+Run the app in test mode: **`npm run start:test`**

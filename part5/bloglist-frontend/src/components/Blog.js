@@ -18,7 +18,7 @@ const Blog = ({ blog, updateBlog, removeBlog }) => {
 	}
 
 	return (
-		<div>
+		<li>
 			{blog.title} <em>by</em> {blog.author}
 			<button onClick={() => setViewDetail(!viewDetail)}>
 				{viewDetail ? 'hide' : 'view'}
@@ -28,11 +28,11 @@ const Blog = ({ blog, updateBlog, removeBlog }) => {
 				<div style={{ padding: 10, margin: 10, border: '1px solid black' }}>
 					<a href={blog.url}>{blog.url}</a>
 					<p>likes: {blog.likes}</p>
-					<button onClick={editBlog}>like</button>
+					<button id='like-button' onClick={editBlog}>like</button>
 					<button onClick={deleteBlog}>delete</button>
 				</div>
 			}
-		</div>
+		</li>
 	)
 }
 
