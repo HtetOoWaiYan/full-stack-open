@@ -1,0 +1,53 @@
+{
+  "notes": [
+    {
+      "content": "custom-hookit aivan mahtavia",
+      "id": 1
+    },
+    {
+      "content": "paras feature ikinä <3",
+      "id": 2
+    },
+    {
+      "content": "take my hand",
+      "id": 3
+    },
+    {
+      "content": "willow",
+      "id": 4
+    },
+    {
+      "content": "asdf",
+      "id": 5
+    },
+    {
+      "content": "evermore",
+      "id": 6
+    },
+    {
+      "content": "happiness",
+      "id": 7
+    },
+    {
+      "content": "cowboy like me",
+      "id": 8
+    }
+  ],
+  "persons": [
+    {
+      "name": "mluukkai",
+      "number": "040-5483923",
+      "id": 1
+    },
+    {
+      "name": "swift",
+      "number": "13123213",
+      "id": 2
+    },
+    {
+      "name": "taylor",
+      "number": "1342341",
+      "id": 3
+    }
+  ]
+}
