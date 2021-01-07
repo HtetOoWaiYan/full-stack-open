@@ -1,20 +1,24 @@
 import React, { useState } from 'react'
+import { useDispatch } from 'react-redux'
 import PropTypes from 'prop-types'
+import { incrementLike, removeBlog } from '../reducers/blogReducer'
 
-const Blog = ({ blog, updateBlog, removeBlog }) => {
+const Blog = ({ blog }) => {
+	const dispatch = useDispatch()
+
 	const [ viewDetail, setViewDetail ] = useState(false)
 
 	const editBlog = () => {
-		updateBlog(blog.id ,{
+		dispatch(incrementLike(blog.id ,{
 			title: blog.title,
 			author: blog.author,
 			url: blog.url,
 			likes: ++blog.likes,
-		})
+		}))
 	}
 
 	const deleteBlog = () => {
-		removeBlog(blog.id)
+		dispatch(removeBlog(blog.id))
 	}
 
 	return (
@@ -38,8 +42,6 @@ const Blog = ({ blog, updateBlog, removeBlog }) => {
 
 Blog.propTypes = {
 	blog: PropTypes.object.isRequired,
-	updateBlog: PropTypes.func.isRequired,
-	removeBlog: PropTypes.func.isRequired,
 }
 
 export default Blog

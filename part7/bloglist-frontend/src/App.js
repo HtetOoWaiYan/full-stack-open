@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
 import LoginForm from './components/LoginForm'
@@ -6,17 +7,19 @@ import Notification from './components/Notification'
 import loginService from './services/login'
 import blogService from './services/blogs'
 
+import { initializeBlogs } from './reducers/blogReducer'
+import { setNotification } from './reducers/notificationReducer'
+
 const App = () => {
-	const [blogs, setBlogs] = useState([])
+	const dispatch = useDispatch()
+
+	const blogs = useSelector(state => state.blogs)
 	const [user, setUser] = useState(null)
-	const [message, setMessage] = useState(null)
 	const [formVisible, setFormVisible] = useState(false)
 
 	useEffect(() => {
-		blogService.getAll().then(blogs =>
-			setBlogs(blogs)
-		)
-	}, [])
+		dispatch(initializeBlogs())
+	}, [dispatch])
 
 	useEffect(() => {
 		const loggedUserJSON = window.localStorage.getItem('loggedInUser')
@@ -39,10 +42,7 @@ const App = () => {
 			blogService.setToken(user.token)
 			setUser(user)
 		} catch (exception) {
-			setMessage('Wrong credentials')
-			setTimeout(() => {
-				setMessage(null)
-			}, 4000)
+			dispatch(setNotification('Wrong credentials', 4000))
 		}
 	}
 
@@ -51,45 +51,10 @@ const App = () => {
 		setUser(null)
 	}
 
-	const addBlog = async blogObject => {
-		const addedBlog = await blogService
-			.create(blogObject)
-
-		setBlogs(blogs.concat(addedBlog))
-
-		setMessage(`'${addedBlog.title}' by ${addedBlog.author} added.`)
-		setTimeout(() => {
-			setMessage(null)
-			setFormVisible(false)
-		}, 3000)
-	}
-
-	const updateBlog = async (id, blogObject) => {
-		const updatedBlog = await blogService
-			.update(id, blogObject)
-
-		const newBlogs = blogs.map(blog => {
-			if (blog.id === id) {
-				return { ...blog, likes: updatedBlog.likes }
-			}
-			return blog
-		})
-
-		setBlogs(newBlogs)
-	}
-
-	const removeBlog = async id => {
-		await blogService.remove(id)
-
-		const newBlogs = blogs.filter(blog => blog.id !== id)
-
-		setBlogs(newBlogs)
-	}
-
 	if (user === null) {
 		return (
 			<div>
-				<Notification message={message} />
+				<Notification />
 				<LoginForm createLogin={createLogin} />
 			</div>
 		)
@@ -100,11 +65,11 @@ const App = () => {
 			<h2>blogs</h2>
 			<p>{user.name} logged in.</p>
 			<button onClick={handleLogout}>log out</button>
-			<Notification message={message} />
+			<Notification />
 			{
 				formVisible
 					? <div>
-						<BlogForm addBlog={addBlog} />
+						<BlogForm />
 						<button onClick={() => setFormVisible(false)}>cancel</button>
 					</div>
 					: <button onClick={() => setFormVisible(true)}>new blog</button>
@@ -118,8 +83,6 @@ const App = () => {
 						<Blog
 							key={blog.id}
 							blog={blog}
-							updateBlog={updateBlog}
-							removeBlog={removeBlog}
 						/>
 					)}
 			</ul>
