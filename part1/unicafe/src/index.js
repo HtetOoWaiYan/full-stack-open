@@ -19,7 +19,7 @@ const Statistics = ({ good, neutral, bad, all }) => (
         <h2>statistics</h2>
         {
             all === 0
-            ? <div> No feedback given </div>
+            ? <div>No feedback given</div>
             : <table>
                 <tbody>
                     <Statistic text="good" value={good} />
@@ -39,7 +39,7 @@ const App = () => {
     const [neutral, setNeutral] = useState(0)
     const [bad, setBad] = useState(0)
 
-    let all = good + neutral + bad
+    const all = good + neutral + bad
 
     return (
         <div>

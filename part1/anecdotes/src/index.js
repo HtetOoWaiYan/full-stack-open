@@ -4,16 +4,15 @@ import ReactDOM from 'react-dom'
 const App = (props) => {
     const [selected, setSelected] = useState(0)
     const [points, setPoints] = useState(new Array(6).fill(0))
-
-    let copy = [...points]
-
+    
     // The index of most voted anecdote
-    let most_voted = points.indexOf(Math.max(...points))
+    const most_voted = points.indexOf(Math.max(...points))
     
     // The sum of all the values in 'points' array
-    let sum = points.reduce((value1, value2) => value1 + value2, 0)
+    const sum = points.reduce((value1, value2) => value1 + value2, 0)
 
     const handleVote = () => {
+        const copy = [ ...points ]
         copy[selected] += 1
         setPoints(copy)
     }
@@ -27,8 +26,8 @@ const App = (props) => {
             <h1>Anecdote of the day</h1>
             <p>{props.anecdotes[selected]}</p>
             <p>has {points[selected]} votes</p>
-            <button onClick={() => handleVote()}>vote</button>
-            <button onClick={() => handleNext()}>next anecdote</button>
+            <button onClick={handleVote}>vote</button>
+            <button onClick={handleNext}>next anecdote</button>
             {
                 sum !== 0
                 ? <div>
